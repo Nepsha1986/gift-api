@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import { Product } from '../models/Product';
+import { getItems } from "../db";
 
 const router = Router();
 let products: Product[] = [];
@@ -10,6 +11,11 @@ const taskValidationRules = [
 	body('description').notEmpty().isString().withMessage('Description is required'),
 	body('link').notEmpty().isString().withMessage('Link is required'),
 ];
+
+interface QueryParams {
+	locale: 'USA' | 'Ukraine';
+	lang: 'en' | 'ru' | 'ua';
+}
 
 router.post('/', taskValidationRules, (req: Request, res: Response) => {
 	const errors = validationResult(req);
@@ -29,8 +35,10 @@ router.post('/', taskValidationRules, (req: Request, res: Response) => {
 	res.status(201).json(newProduct);
 });
 
-router.get('/', (req: Request, res: Response) => {
-	res.json(products);
+router.get('/', async (req: Request, res: Response) => {
+	const data = await getItems('products');
+
+	res.json(data);
 });
 
 router.get('/:id', (req: Request, res: Response) => {
