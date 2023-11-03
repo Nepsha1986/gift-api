@@ -5,6 +5,7 @@ dotenv.config();
 import { init } from "./src/db";
 
 import productRoutes from './src/routes/products';
+import ideaRoutes from './src/routes/ideas';
 const app: Express = express();
 const port = process.env.PORT;
 
@@ -17,6 +18,7 @@ init().then(() => {
 })
 
 app.use('/products', productRoutes);
+app.use('/ideas', ideaRoutes);
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello, TypeScript Express!');

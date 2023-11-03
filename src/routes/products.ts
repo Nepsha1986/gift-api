@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import { Product } from '../models/Product';
-import { getItems } from "../db";
+import { addProduct, getProducts } from "../controllers/productController";
 
 const router = Router();
 let products: Product[] = [];
@@ -24,32 +24,10 @@ router.post('/', taskValidationRules, (req: Request, res: Response) => {
 		return res.status(400).json({ errors: errors.array() });
 	}
 
-	const newProduct: Product = {
-		id: products.length + 1,
-		title: req.body.title,
-		description: req.body.description,
-		link: req.body.link
-	};
-
-	products.push(newProduct);
-	res.status(201).json(newProduct);
+	return addProduct(req, res);
 });
 
-router.get('/', async (req: Request, res: Response) => {
-	const data = await getItems('products');
-
-	res.json(data);
-});
-
-router.get('/:id', (req: Request, res: Response) => {
-	const product = products.find((t) => t.id === parseInt(req.params.id));
-
-	if (!product) {
-		res.status(404).send('Task not found');
-	} else {
-		res.json(product);
-	}
-});
+router.get('/', getProducts);
 
 router.put('/:id', taskValidationRules, (req: Request, res: Response) => {
 	const errors = validationResult(req);
