@@ -3,11 +3,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { init } from "./src/db";
-
-import productRoutes from './src/routes/products';
 import ideaRoutes from './src/routes/ideas';
 const app: Express = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 8000;
 
 app.use(express.json()); // Add this line to enable JSON parsing in the request body
 
@@ -17,7 +15,6 @@ init().then(() => {
     });
 })
 
-app.use('/products', productRoutes);
 app.use('/ideas', ideaRoutes);
 
 app.get('/', (req: Request, res: Response) => {
