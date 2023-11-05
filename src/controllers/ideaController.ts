@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { db } from "../db";
+import { db, init } from "../db";
 import { Idea } from "../models/Idea";
 
 export const getIdea = async (req: Request, res: Response) => {
@@ -15,6 +15,7 @@ export const getIdea = async (req: Request, res: Response) => {
 }
 
 export const getIdeas = async (req: Request, res: Response) => {
+	await init();
 	const data = await db.collection('ideas').find().toArray();
 
 	res.json(data);
