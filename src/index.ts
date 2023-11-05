@@ -6,42 +6,26 @@ import ideaRoutes from '../src/routes/ideas';
 import { init } from "./db";
 const app: Express = express();
 
-// init().then(() => {
-// 	app.use(express.json()); // Add this line to enable JSON parsing in the request body
-//
-// 	app.use('/api/ideas', ideaRoutes);
-// 	app.use('/api/test', (req, res) => {
-// 		res.json({
-// 			test: 'test'
-// 		})
-// 	});
-//
-// 	app.get('/', (req: Request, res: Response) => {
-// 		res.send('Hello, TypeScript Express!');
-// 	});
-//
-// 	app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-// 		console.error(err.stack);
-// 		res.status(500).send('Something went wrong');
-// 	});
-// })
+init().then(() => {
+	app.use(express.json()); // Add this line to enable JSON parsing in the request body
 
-app.use(express.json()); // Add this line to enable JSON parsing in the request body
+	app.use('/api/ideas', ideaRoutes);
+	app.use('/api/test', (req, res) => {
+		res.json({
+			test: 'test'
+		})
+	});
 
-//app.use('/api/ideas', ideaRoutes);
-app.use('/api/test', (req, res) => {
-	res.json({
-		test: 'test'
-	})
-});
+	app.get('/', (req: Request, res: Response) => {
+		res.send('Hello, TypeScript Express!');
+	});
 
-app.get('/', (req: Request, res: Response) => {
-	res.send('Hello, TypeScript Express!');
-});
-
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-	console.error(err.stack);
-	res.status(500).send('Something went wrong');
-});
+	app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+		console.error(err.stack);
+		res.status(500).send('Something went wrong');
+	});
+}).catch(e => {
+	console.log(e.message);
+})
 
 export { app };
