@@ -6,7 +6,7 @@ import { Idea } from "../models/Idea";
 export const getIdea = async (req: Request, res: Response) => {
 	const _ref_id = req.params._ref_id;
 
-	const db = (await clientPromise).db('gift-idea');
+	const db = (await clientPromise).db('gift-ideas');
 	const data = await db.collection('ideas').findOne({_ref_id});
 
 	if (!data) {
