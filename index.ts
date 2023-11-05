@@ -16,6 +16,11 @@ init().then(() => {
 })
 
 app.use('/ideas', ideaRoutes);
+app.use('/test', (req, res) => {
+    res.json({
+        test: 'test';
+    })
+});
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello, TypeScript Express!');
