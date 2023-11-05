@@ -14,7 +14,7 @@ let db: Db;
 
 const init = () =>
 	client.connect().then(() => {
-		db = client.db('gift-ideas');
+		return db = client.db('gift-ideas');
 	})
 
 export { init, db };
