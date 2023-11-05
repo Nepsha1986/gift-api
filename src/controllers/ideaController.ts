@@ -1,10 +1,12 @@
 import { Request, Response } from 'express';
 
-import { db } from "../db";
+import { clientPromise } from "../db";
 import { Idea } from "../models/Idea";
 
 export const getIdea = async (req: Request, res: Response) => {
 	const _ref_id = req.params._ref_id;
+
+	const db = (await clientPromise).db('gift-idea');
 	const data = await db.collection('ideas').findOne({_ref_id});
 
 	if (!data) {
@@ -15,12 +17,14 @@ export const getIdea = async (req: Request, res: Response) => {
 }
 
 export const getIdeas = async (req: Request, res: Response) => {
+	const db = (await clientPromise).db('gift-ideas');
 	const data = await db.collection('ideas').find().toArray();
 
 	res.json(data);
 };
 
 export const addIdea = async (req: Request, res: Response) => {
+	const db = (await clientPromise).db('gift-ideas');
 	const existingRef = await db.collection('ideas').findOne({ _ref_id: req.body._ref_id });
 
 	if (existingRef) {
