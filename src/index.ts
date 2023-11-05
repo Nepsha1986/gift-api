@@ -3,10 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import ideaRoutes from '../src/routes/ideas';
-import { init } from "./db";
 const app: Express = express();
-
-init();
 
 app.use(express.json()); // Add this line to enable JSON parsing in the request body
 
@@ -16,10 +13,6 @@ app.use('/api/test', (req, res) => {
 		test: 'test-2',
 		user: process.env.DATABASE_USER
 	})
-});
-
-app.get('/', (req: Request, res: Response) => {
-	res.send('Hello, TypeScript Express!');
 });
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

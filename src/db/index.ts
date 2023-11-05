@@ -1,4 +1,4 @@
-import { Db, MongoClient, ServerApiVersion } from 'mongodb';
+import {  MongoClient, ServerApiVersion } from 'mongodb';
 
 const uri = `mongodb+srv://${process.env.DATABASE_USER}:${process.env.DATABASE_PASS}@atlascluster.rkhjcgx.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -10,11 +10,6 @@ const client = new MongoClient(uri, {
 	}
 });
 
-let db: Db;
+const clientPromise = client.connect();
 
-const init = () =>
-	client.connect().then(() => {
-		return db = client.db('gift-ideas');
-	})
-
-export { init, db };
+export { clientPromise };
