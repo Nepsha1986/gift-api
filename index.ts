@@ -18,7 +18,7 @@ init().then(() => {
 app.use('/ideas', ideaRoutes);
 app.use('/test', (req, res) => {
     res.json({
-        test: 'test';
+        test: 'test'
     })
 });
 
