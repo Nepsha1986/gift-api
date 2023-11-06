@@ -9,6 +9,12 @@ const app: Express = express();
 app.use(express.json());
 
 app.use('/api/v1/ideas', ideaRoutes);
+app.use('/api/v1/test', (req, res) => {
+	res.json({
+		test: 'test-3',
+		user: process.env.DATABASE_USER
+	})
+});
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 	console.error(err.stack);
