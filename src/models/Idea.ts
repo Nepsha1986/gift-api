@@ -7,7 +7,7 @@ export interface Product {
 
 export interface Idea {
 	_id: ObjectId,
-	_ref_id: string,
-	name: string,
+	refId: string,
+	locale: string;
 	products: Product[],
 }
