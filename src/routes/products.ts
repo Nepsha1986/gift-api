@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express';
 import { body, validationResult } from "express-validator";
-import { add, getAll, deleteItem } from "../controllers/productController";
+import { add, get, getAll, deleteItem, update } from "../controllers/productController";
 
 const router = Router();
 
@@ -12,6 +12,7 @@ const ProductValidationRules = [
 	body('refId').optional().isString()
 ];
 
+router.get('/:id', get);
 router.get('/', getAll);
 router.post('/', ProductValidationRules, (req: Request, res: Response) => {
 	const errors = validationResult(req);
@@ -22,6 +23,7 @@ router.post('/', ProductValidationRules, (req: Request, res: Response) => {
 
 	return add(req, res);
 });
+router.put('/:id', update);
 router.delete('/:id', deleteItem);
 
 export default router;

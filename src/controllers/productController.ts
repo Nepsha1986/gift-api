@@ -31,12 +31,23 @@ export const add = async (req: Request, res: Response) => {
 	res.status(201).json(newProduct);
 }
 
-export const getAll = async (req: Request, res: Response) => {
-	const {page, pageSize, refId, ...rest} = req.query as PageableQuery & FilterQuery;
-	const pageParsed: number = parseInt(page) || 1;
-	const pageSizeParsed: number = parseInt(pageSize) || 10;
-
+export const get = async (req: Request, res: Response) => {
 	try {
+		const id = req.params.id;
+		const query = { _id: new ObjectId(id) };
+		const data = await db.collection(DB_COLLECTION).findOne(query);
+		res.json(data || {});
+	} catch (error) {
+		console.error('Error getting product:', error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+};
+
+export const getAll = async (req: Request, res: Response) => {
+	try {
+		const {page, pageSize, refId, ...rest} = req.query as PageableQuery & FilterQuery;
+		const pageParsed: number = parseInt(page) || 1;
+		const pageSizeParsed: number = parseInt(pageSize) || 10;
 		const totalItems = await db.collection(DB_COLLECTION).countDocuments();
 		const totalPages = Math.ceil(totalItems / pageSizeParsed);
 
@@ -54,6 +65,21 @@ export const getAll = async (req: Request, res: Response) => {
 		res.status(500).json({error: 'Internal Server Error'});
 	}
 };
+
+export const update = async (req: Request, res: Response) => {
+	const _id = req.params.id;
+	const collection = db.collection<Product>(DB_COLLECTION);
+	const query = {_id: new ObjectId(_id)};
+
+	const relatedProducts = await collection.findOne(query);
+
+	if (!relatedProducts) {
+		res.status(404).send('Products not found');
+	} else {
+		const updated = await collection.updateOne(query, { $set: {...req.body} });
+		res.json(updated)
+	}
+}
 
 export const deleteItem = async (req: Request, res: Response) => {
 	const _id: ObjectId = new ObjectId(req.params.id);
