@@ -16,6 +16,10 @@ type FilterQuery = {
 	locale: string,
 }
 
+type Searchable = {
+	search: string;
+}
+
 export const add = async (req: Request, res: Response) => {
 	const {title, description, refId, locale, link} = req.body as Product;
 
@@ -34,24 +38,45 @@ export const add = async (req: Request, res: Response) => {
 export const get = async (req: Request, res: Response) => {
 	try {
 		const id = req.params.id;
-		const query = { _id: new ObjectId(id) };
+		const query = {_id: new ObjectId(id)};
 		const data = await db.collection(DB_COLLECTION).findOne(query);
 		res.json(data || {});
 	} catch (error) {
 		console.error('Error getting product:', error);
-		res.status(500).json({ error: 'Internal Server Error' });
+		res.status(500).json({error: 'Internal Server Error'});
 	}
 };
 
 export const getAll = async (req: Request, res: Response) => {
 	try {
-		const {page, pageSize, refId, ...rest} = req.query as PageableQuery & FilterQuery;
+		const {
+			page,
+			pageSize,
+			refId,
+			search,
+			...rest
+		} = req.query as PageableQuery & FilterQuery & Searchable;
+
 		const pageParsed: number = parseInt(page) || 1;
 		const pageSizeParsed: number = parseInt(pageSize) || 10;
-		const totalItems = await db.collection(DB_COLLECTION).countDocuments();
+
+		const searchQuery = search
+			? {
+				$or: [
+					{refId: {$regex: search, $options: 'i'}},
+					{title: {$regex: search, $options: 'i'}},
+				],
+			}
+			: {};
+
+		const totalItems = await db.collection(DB_COLLECTION).countDocuments({...searchQuery, ...rest});
 		const totalPages = Math.ceil(totalItems / pageSizeParsed);
 
-		const items = await db.collection(DB_COLLECTION).find({...rest}).skip((pageParsed - 1) * pageSizeParsed).limit(pageSizeParsed).toArray();
+		const items = await db.collection(DB_COLLECTION)
+			.find({...searchQuery, ...rest})
+			.skip((pageParsed - 1) * pageSizeParsed)
+			.limit(pageSizeParsed)
+			.toArray();
 
 		res.json({
 			items,
@@ -76,7 +101,7 @@ export const update = async (req: Request, res: Response) => {
 	if (!relatedProducts) {
 		res.status(404).send('Products not found');
 	} else {
-		const updated = await collection.updateOne(query, { $set: {...req.body} });
+		const updated = await collection.updateOne(query, {$set: {...req.body}});
 		res.json(updated)
 	}
 }
