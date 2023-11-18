@@ -52,7 +52,6 @@ export const getAll = async (req: Request, res: Response) => {
 		const {
 			page,
 			pageSize,
-			refId,
 			search,
 			...rest
 		} = req.query as PageableQuery & FilterQuery & Searchable;
