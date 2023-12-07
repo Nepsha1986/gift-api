@@ -8,6 +8,18 @@ const app: Express = express();
 
 // Enables JSON parsing in the request body
 app.use(express.json());
+app.use((req, res, next) => {
+	const corsWhitelist = [
+		'https://gift-idea.co',
+		'https://admin.gift-idea.co'
+	];
+	if (corsWhitelist.indexOf(req.headers.origin as string) !== -1) {
+		res.header('Access-Control-Allow-Origin', req.headers.origin);
+		res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+	}
+
+	next();
+});
 
 app.use('/api/v1/ideas', ideaRoutes);
 app.use('/api/v1/products', productRoutes);
