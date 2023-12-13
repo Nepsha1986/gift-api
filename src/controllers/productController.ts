@@ -95,12 +95,12 @@ export const update = async (req: Request, res: Response) => {
 	const collection = db.collection<Product>(DB_COLLECTION);
 	const query = {_id: new ObjectId(_id)};
 
-	const relatedProducts = await collection.findOne(query);
+	const relatedProduct = await collection.findOne(query);
 
-	if (!relatedProducts) {
-		res.status(404).send('Products not found');
+	if (!relatedProduct) {
+		res.status(404).send('Product not found');
 	} else {
-		const updated = await collection.updateOne(query, {$set: {...req.body}});
+		const updated = await collection.findOneAndUpdate(query, {$set: {...req.body}});
 		res.json(updated)
 	}
 }
