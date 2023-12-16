@@ -21,11 +21,12 @@ type Searchable = {
 }
 
 export const add = async (req: Request, res: Response) => {
-	const {title, description, refId, locale, link} = req.body as Product;
+	const {title, description, refId, locale, link, imgSrc} = req.body as Product;
 
 	const data: Omit<Product, '_id'> = {
 		title,
 		description,
+		imgSrc,
 		refId,
 		locale,
 		link
